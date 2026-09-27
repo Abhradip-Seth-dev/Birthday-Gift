@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import BirthdayIntro from './components/BirthdayIntro'
 import NightSky from './components/NightSky'
 
-type Scene = 'intro' | 'sky'
+type Scene = 'intro' | 'sky' | 'message'
 
 function App() {
   const [currentScene, setCurrentScene] = useState<Scene>('intro')
@@ -34,9 +34,12 @@ function App() {
         visible={currentScene === 'intro'}
       />
 
-      {/* Scene 2: Night Sky — only mounted when needed */}
+      {/* Scene 2 & 3: Night Sky container handles both 'sky' and 'message' states */}
       {skyMounted && (
-        <NightSky visible={currentScene === 'sky'} />
+        <NightSky 
+          scene={currentScene}
+          onWishMade={() => setCurrentScene('message')}
+        />
       )}
     </div>
   )

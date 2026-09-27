@@ -3,26 +3,28 @@ import StarField from './StarField'
 import BirthdayMessage from './BirthdayMessage'
 
 interface NightSkyProps {
-  visible: boolean
+  scene: 'intro' | 'sky' | 'message'
+  onWishMade: () => void
 }
 
-const NightSky: React.FC<NightSkyProps> = ({ visible }) => {
+const NightSky: React.FC<NightSkyProps> = ({ scene, onWishMade }) => {
   const [starsVisible, setStarsVisible] = useState(false)
-  const [contentVisible, setContentVisible] = useState(false)
+
+  const isVisible = scene === 'sky' || scene === 'message'
 
   useEffect(() => {
-    if (!visible) return
-    const t1 = setTimeout(() => setStarsVisible(true), 150)
-    const t2 = setTimeout(() => setContentVisible(true), 800)
-    return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [visible])
+    if (scene === 'sky') {
+      const t1 = setTimeout(() => setStarsVisible(true), 150)
+      return () => clearTimeout(t1)
+    }
+  }, [scene])
 
   return (
     <div
-      className={`scene scene-sky ${visible ? 'scene-visible' : 'scene-enter'}`}
+      className={`scene scene-sky ${isVisible ? 'scene-visible' : 'scene-enter'}`}
       style={{
         background: 'radial-gradient(ellipse at 50% 0%, #0f0d24 0%, #0a0812 55%, #06040e 100%)',
-        pointerEvents: visible ? 'auto' : 'none',
+        pointerEvents: isVisible ? 'auto' : 'none',
       }}
     >
       {/* ── Star field — always positioned absolutely so it fills the scene ── */}
@@ -74,19 +76,65 @@ const NightSky: React.FC<NightSkyProps> = ({ visible }) => {
         }}
       />
 
-      {/* ── Birthday message — scrollable, sits above stars ── */}
+      {/* ── Scene 2: Wish Button ── */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 5,
+          opacity: scene === 'sky' && starsVisible ? 1 : 0,
+          transition: 'opacity 1s ease 1s',
+          pointerEvents: scene === 'sky' ? 'auto' : 'none',
+        }}
+      >
+        <button
+          onClick={onWishMade}
+          style={{
+            padding: '1rem 3.5rem',
+            fontSize: '1.4rem',
+            fontFamily: 'var(--font-elegant)',
+            fontStyle: 'italic',
+            color: '#fffde4',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: '999px',
+            backdropFilter: 'blur(8px)',
+            cursor: 'pointer',
+            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.2)',
+            transition: 'all 0.4s ease',
+            letterSpacing: '0.05em',
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'
+            e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.25)'
+            e.currentTarget.style.transform = 'scale(1.05)'
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)'
+            e.currentTarget.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.2)'
+            e.currentTarget.style.transform = 'scale(1)'
+          }}
+        >
+          Make a wish... ✨
+        </button>
+      </div>
+
+      {/* ── Scene 3: Birthday message — scrollable, sits above stars ── */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           zIndex: 10,
-          opacity: contentVisible ? 1 : 0,
+          opacity: scene === 'message' ? 1 : 0,
           transition: 'opacity 1.4s ease',
-          // transparent so stars show through
           background: 'transparent',
+          pointerEvents: scene === 'message' ? 'auto' : 'none',
         }}
       >
-        <BirthdayMessage />
+        {scene === 'message' && <BirthdayMessage />}
       </div>
     </div>
   )

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import snehaImg from '../assets/sneha.jpeg'
 
 interface MessageParagraph {
   text: string
@@ -17,11 +18,11 @@ const MESSAGE_PARAGRAPHS: MessageParagraph[] = [
   { text: "I want to travel the whole world with you ☄️☄️☄️🙂↕️🙂↕️🙂↕️", isFinal: true },
 ]
 
-// Staggered reveal delays per paragraph (ms)
-const REVEAL_DELAYS = [200, 900, 1700, 2500, 3300, 4100, 4900, 6000]
+// Staggered reveal delays per paragraph (ms) + 1 for the image/header
+const REVEAL_DELAYS = [200, 1000, 1800, 2600, 3400, 4200, 5000, 6100, 7200]
 
 const BirthdayMessage: React.FC = () => {
-  const [revealed, setRevealed] = useState<boolean[]>(Array(MESSAGE_PARAGRAPHS.length).fill(false))
+  const [revealed, setRevealed] = useState<boolean[]>(Array(MESSAGE_PARAGRAPHS.length + 1).fill(false))
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Timer-based sequential reveal — reliable regardless of scroll position
@@ -56,7 +57,7 @@ const BirthdayMessage: React.FC = () => {
         background: 'transparent',
       }}
     >
-      {/* ── Decorative header ornament ── */}
+      {/* ── Photo & Decorative header ── */}
       <div
         style={{
           marginBottom: '2rem',
@@ -64,8 +65,31 @@ const BirthdayMessage: React.FC = () => {
           opacity: revealed[0] ? 1 : 0,
           transform: revealed[0] ? 'translateY(0)' : 'translateY(-14px)',
           transition: 'opacity 1s ease, transform 1s ease',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
+        <div style={{
+          width: '180px',
+          height: '180px',
+          marginBottom: '2rem',
+          borderRadius: '50%',
+          overflow: 'hidden',
+          boxShadow: '0 0 30px rgba(200, 170, 230, 0.25), 0 0 60px rgba(255, 213, 128, 0.1)',
+          border: '2px solid rgba(255,255,255,0.15)',
+        }}>
+          <img 
+            src={snehaImg} 
+            alt="Sneha"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        </div>
+
         <p
           style={{
             fontFamily: 'var(--font-elegant)',
@@ -90,19 +114,21 @@ const BirthdayMessage: React.FC = () => {
       </div>
 
       {/* ── Message paragraphs ── */}
-      {MESSAGE_PARAGRAPHS.map((para, i) => (
-        <div
-          key={i}
-          style={{
-            maxWidth: '580px',
-            width: '100%',
-            textAlign: 'center',
-            marginBottom: para.isFinal ? '3rem' : '2rem',
-            opacity: revealed[i] ? 1 : 0,
-            transform: revealed[i] ? 'translateY(0)' : 'translateY(22px)',
-            transition: 'opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1), transform 1.1s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-        >
+      {MESSAGE_PARAGRAPHS.map((para, i) => {
+        const revealIndex = i + 1
+        return (
+          <div
+            key={i}
+            style={{
+              maxWidth: '580px',
+              width: '100%',
+              textAlign: 'center',
+              marginBottom: para.isFinal ? '3rem' : '2rem',
+              opacity: revealed[revealIndex] ? 1 : 0,
+              transform: revealed[revealIndex] ? 'translateY(0)' : 'translateY(22px)',
+              transition: 'opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1), transform 1.1s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          >
           {para.isTitle ? (
             // ── BIG TITLE ──
             <h2
@@ -177,12 +203,13 @@ const BirthdayMessage: React.FC = () => {
             </p>
           )}
         </div>
-      ))}
+        )
+      })}
 
       {/* ── End ornament ── */}
       <div
         style={{
-          opacity: revealed[MESSAGE_PARAGRAPHS.length - 1] ? 1 : 0,
+          opacity: revealed[MESSAGE_PARAGRAPHS.length] ? 1 : 0,
           transition: 'opacity 1.5s ease 0.8s',
           textAlign: 'center',
           marginTop: '0.5rem',
