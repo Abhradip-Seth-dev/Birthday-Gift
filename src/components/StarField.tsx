@@ -136,7 +136,7 @@ const StarField: React.FC = () => {
 }
 
 // ─── Individual shooting star ───
-const ShootingStarEl: React.FC<ShootingStar> = ({ id, startX, startY, angle, length, duration }) => {
+const ShootingStarEl: React.FC<ShootingStar> = ({ startX, startY, angle, length, duration }) => {
   return (
     <div
       style={{

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import BirthdayIntro from './components/BirthdayIntro'
 import NightSky from './components/NightSky'
 

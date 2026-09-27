@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import Candle from './Candle'
 
 interface CakeProps {
@@ -26,7 +26,7 @@ const Cake: React.FC<CakeProps> = ({ litCandles, onCandleLight }) => {
     // Emit sparkle particles
     const baseX = 120 + CANDLES[index].xRel + 4
     const baseY = 60
-    const newParticles = Array.from({ length: 6 }, (_, i) => ({
+    const newParticles = Array.from({ length: 6 }, () => ({
       id: particleId.current++,
       x: baseX + (Math.random() - 0.5) * 20,
       y: baseY + (Math.random() - 0.5) * 10,
